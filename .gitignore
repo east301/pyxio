@@ -2,5 +2,6 @@
 .DS_Store
 
 # Python
+*.egg-info
 *.pyc
 *.pyo
