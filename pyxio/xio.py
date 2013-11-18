@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 
 try:
     import bz2
@@ -11,6 +12,18 @@ try:
     import gzip
 except ImportError:
     gzip = None
+
+
+# stream wrapper for backward compatibility
+if sys.version_info < (2, 7):
+    import contextlib
+
+    def _wrap_stream(stream):
+        return contextlib.closing(stream)
+
+else:
+    def _wrap_stream(stream):
+        return stream
 
 
 def xopen(path, mode='r'):
@@ -30,13 +43,13 @@ def xopen(path, mode='r'):
         ext = ext.lower()
         if ext == '.bz2':
             if bz2:
-                return bz2.BZ2File(path, mode)
+                return _wrap_stream(bz2.BZ2File(path, mode))
             else:
                 raise Exception('bz2 module is not available.')
 
         elif ext == '.gz':
             if gzip:
-                return gzip.open(path, mode)
+                return _wrap_stream(gzip.open(path, mode))
             else:
                 raise Exception('gzip module is not available.')
 
