@@ -5,3 +5,5 @@
 *.egg-info
 *.pyc
 *.pyo
+build
+dist
